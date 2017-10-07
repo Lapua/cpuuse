@@ -1,5 +1,4 @@
 #include <QApplication>
-//#include "getCPUuse.h"
 #include "cpuuse.h"
 
 int main(int argc, char *argv[])

@@ -7,31 +7,30 @@
 #include <string>
 using namespace std;
 
-int oldUse,oldTime;
+int oldUse[16];
+int oldTime;
 
-double getCPUuse(void)
+void getCPUuse(int *cpu)
 {
     struct tms wtms;
     int usr, nice, sys;
-    int result;
     string str;
-    clock_t nowTime = times(&wtms);
-    int nowUse;
+    clock_t nowTime;
+    nowTime = times(&wtms);
 
     ifstream ifs("/proc/stat");
-    ifs >> str >> usr >> nice >> sys;
-    nowUse = usr + nice + sys;
+    getline(ifs,str);
+    for(int i=0; ; i++){
+        ifs >> str >> usr >> nice >> sys;
+        if(str=="intr"){
+            break;
+        }
+        cpu[i] = ((double)(usr+nice+sys - oldUse[i]) / (nowTime-oldTime)) *100;
+        oldUse[i] = usr + nice + sys;
+    }
     ifs.close();
 
-    result =  ((double)(nowUse-oldUse) / (nowTime-oldTime)) * 100;
-    if(result > 100){
-        result = 100;
-    }
-
     oldTime = nowTime;
-    oldUse = nowUse;
-
-    return result;
 }
 
 #endif

@@ -1,17 +1,20 @@
 #ifndef cpu_h
 #define cpu_h
 
-//#include <QtGui>
 #include <QtWidgets>
-#include <QDial>
 #include <QAbstractSlider>
 #include <QtCore/QThread>
-#include <QPushButton>
-#include <QTimer>	//QT += core
+#include <QTimer>
 #include <QTimerEvent>
 #include <QVBoxLayout>
-#include <QLCDNumber>
-//#include "getCPUuse.h"
+#include <QLabel>
+#include "core.h"
+
+#include <sys/times.h>
+#include <fstream>
+#include <string>
+#include <iostream>
+using namespace std;
 
 class CpuUse : public QWidget
 {
@@ -21,16 +24,24 @@ public :
     CpuUse(QWidget *parent = 0);
 
 private :
-    QWidget *window;
-    QDial *cpuuse;
-    QPushButton *button;
-    QVBoxLayout *layout;
-    QLCDNumber *number;
-
+    QProgressBar *topBar;
+    QHBoxLayout *topLayout;
+    QVBoxLayout *mainLayout;
+    QLabel *rateLabel;
+    QLabel *cpuLabel;
+    Core *cpu;
     void timerEvent(QTimerEvent *event);
+    void getCPUuse(void);
+    int top(void);
+
     int loopTimer;
     int approachTimer;
-    double cpuuseValue;
+    double topValue;
+
+    int i;
+    int oldUse[16];
+    int oldTime;
+    int cpuValue[16];
 };
 
 #endif
